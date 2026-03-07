@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.log
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Node / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets / Keys
+*.pem
+*.key
+
+# FAISS indexes (regenerated at runtime)
+*.index
+faiss_*.index
+
+# SQLite databases (generated per-tenant)
+*.db
+*.sqlite
+*.sqlite3
+
+# Security logs
+security.log
+*.p12
+
+# Test artifacts
+*.db-shm
+*.db-wal
+test.db

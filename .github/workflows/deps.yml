@@ -1,0 +1,62 @@
+# KLH Match - Dependency Updates Workflow
+# Automatically checks for outdated dependencies weekly
+
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-backend:
+    name: Check Backend Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check outdated packages
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip list --outdated --format=json > outdated.json
+          cat outdated.json
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-outdated-deps
+          path: backend/outdated.json
+
+  check-frontend:
+    name: Check Frontend Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check outdated packages
+        run: |
+          cd frontend
+          npm ci
+          npm outdated --json > outdated.json || true
+          cat outdated.json
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-outdated-deps
+          path: frontend/outdated.json
