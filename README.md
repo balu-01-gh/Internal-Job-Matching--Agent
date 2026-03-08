@@ -13,16 +13,38 @@ A full-stack platform that matches **internal teams** to **new projects** using 
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite 5, Tailwind CSS, Recharts, Axios |
-| Backend | FastAPI, SQLAlchemy ORM, Pydantic v2 |
-| Auth | JWT (python-jose) + bcrypt + Google OAuth 2.0 |
-| Database | SQLite (multi-tenant per HR) / PostgreSQL (prod) |
-| Vector DB | FAISS IndexFlatIP (cosine via L2-normalised inner product) |
-| Embeddings | sentence-transformers `all-MiniLM-L6-v2` (384-dim) |
-| Resume Parsing | pdfplumber + spaCy |
-| Testing | pytest + pytest-asyncio (46 tests) |
+### Frontend
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white&style=flat-square)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)
+![Recharts](https://img.shields.io/badge/Recharts-2-22B5BF?style=flat-square)
+![Axios](https://img.shields.io/badge/Axios-1-5A29E4?logo=axios&logoColor=white&style=flat-square)
+
+### Backend
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?logo=fastapi&logoColor=white&style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white&style=flat-square)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-D71F00?style=flat-square)
+![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white&style=flat-square)
+
+### AI / ML
+![FAISS](https://img.shields.io/badge/FAISS-IndexFlatIP-0467DF?style=flat-square)
+![sentence-transformers](https://img.shields.io/badge/sentence--transformers-all--MiniLM--L6--v2_(384d)-FF6F00?style=flat-square)
+![spaCy](https://img.shields.io/badge/spaCy-NLP_resume_parsing-09A3D5?logo=spacy&logoColor=white&style=flat-square)
+
+### Auth & Security
+![JWT](https://img.shields.io/badge/JWT-python--jose-000000?logo=jsonwebtokens&logoColor=white&style=flat-square)
+![bcrypt](https://img.shields.io/badge/bcrypt-password_hashing-4A90D9?style=flat-square)
+![Google OAuth](https://img.shields.io/badge/Google_OAuth-2.0-4285F4?logo=google&logoColor=white&style=flat-square)
+
+### Database & Storage
+![SQLite](https://img.shields.io/badge/SQLite-multi--tenant-003B57?logo=sqlite&logoColor=white&style=flat-square)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-production-4169E1?logo=postgresql&logoColor=white&style=flat-square)
+
+### DevOps & Testing
+![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white&style=flat-square)
+![pytest](https://img.shields.io/badge/pytest-46_tests-0A9EDC?logo=pytest&logoColor=white&style=flat-square)
+![Vitest](https://img.shields.io/badge/Vitest-frontend_tests-6E9F18?logo=vitest&logoColor=white&style=flat-square)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white&style=flat-square)
 
 ---
 
