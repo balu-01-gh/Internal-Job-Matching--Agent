@@ -1,6 +1,6 @@
 ﻿# KLH Match AI-Powered Internal Job Matching Agent
 
-> A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring â€” combining sentence embeddings, skill analysis, and team balance metrics.
+> A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring combining sentence embeddings, skill analysis, and team balance metrics.
 
 ## Tech Stack
 
@@ -41,7 +41,7 @@
 
 ## What This Project Demonstrates
 
-This project was built end-to-end as a showcase of full-stack engineering and applied AI â€” covering system design, REST API development, ML integration, multi-tenant architecture, security, testing, and deployment.
+This project was built end-to-end as a showcase of full-stack engineering and applied AI covering system design, REST API development, ML integration, multi-tenant architecture, security, testing, and deployment.
 
 | Area | What Was Built |
 |---|---|
