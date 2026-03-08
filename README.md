@@ -1,16 +1,5 @@
 # KLH Match — AI-Powered Team-Project Matching Platform
 
-A full-stack platform that matches **internal teams** to **new projects** using hybrid AI scoring with sentence embeddings, skill analysis, and team balance metrics.
-
-| Weight | Component |
-|--------|-----------|
-| 40% | Embedding similarity (sentence-transformers + FAISS) |
-| 30% | Skill coverage |
-| 20% | Experience match |
-| 10% | Team balance |
-
----
-
 ## Tech Stack
 
 ### Frontend
@@ -45,6 +34,17 @@ A full-stack platform that matches **internal teams** to **new projects** using 
 ![pytest](https://img.shields.io/badge/pytest-46_tests-0A9EDC?logo=pytest&logoColor=white&style=flat-square)
 ![Vitest](https://img.shields.io/badge/Vitest-frontend_tests-6E9F18?logo=vitest&logoColor=white&style=flat-square)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white&style=flat-square)
+
+---
+
+A full-stack platform that matches **internal teams** to **new projects** using hybrid AI scoring with sentence embeddings, skill analysis, and team balance metrics.
+
+| Weight | Component |
+|--------|-----------|
+| 40% | Embedding similarity (sentence-transformers + FAISS) |
+| 30% | Skill coverage |
+| 20% | Experience match |
+| 10% | Team balance |
 
 ---
 
