@@ -1,4 +1,6 @@
-# KLH Match — AI-Powered Team-Project Matching Platform
+﻿# KLH Match â€” AI-Powered Internal Job Matching Agent
+
+> A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring â€” combining sentence embeddings, skill analysis, and team balance metrics.
 
 ## Tech Stack
 
@@ -37,143 +39,121 @@
 
 ---
 
-A full-stack platform that matches **internal teams** to **new projects** using hybrid AI scoring with sentence embeddings, skill analysis, and team balance metrics.
+## What This Project Demonstrates
 
-| Weight | Component |
-|--------|-----------|
-| 40% | Embedding similarity (sentence-transformers + FAISS) |
-| 30% | Skill coverage |
-| 20% | Experience match |
-| 10% | Team balance |
+This project was built end-to-end as a showcase of full-stack engineering and applied AI â€” covering system design, REST API development, ML integration, multi-tenant architecture, security, testing, and deployment.
+
+| Area | What Was Built |
+|---|---|
+| **AI / NLP** | FAISS vector search with sentence-transformer embeddings (384-dim); PDF resume parsing with spaCy NER |
+| **System Design** | Multi-tenant SQLite isolation per HR organisation; thread-safe engine cache with double-checked locking |
+| **Backend** | FastAPI with 30+ endpoints; Pydantic v2 validation; SQLAlchemy 2.0 ORM; Alembic migrations |
+| **Security** | JWT RBAC (3 roles); Google OAuth 2.0; bcrypt hashing; token-bucket rate limiting; CSP/HSTS headers |
+| **Frontend** | React 18 SPA; role-based routing; dark/light mode; responsive design; accessibility (WCAG) |
+| **Testing** | 46 pytest tests (backend); Vitest + React Testing Library (frontend); CI via GitHub Actions |
+| **DevOps** | Multi-stage Dockerfiles; docker-compose with health-check dependency; `.env`-driven config |
 
 ---
 
-## Project Structure
+## How the AI Matching Works
+
+Each team and project is represented as a **384-dimensional vector** using `sentence-transformers/all-MiniLM-L6-v2`. Matching uses a weighted hybrid score:
 
 ```
-KLH/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              ← FastAPI app, CORS, router registration
-│   │   ├── config.py            ← Pydantic settings (env-driven)
-│   │   ├── database.py          ← SQLAlchemy engine, multi-tenant HR sessions
-│   │   ├── models.py            ← ORM: Team, Employee, Project, Application
-│   │   ├── schemas.py           ← Pydantic v2 request/response schemas
-│   │   ├── auth.py              ← JWT, password hashing, role guards
-│   │   ├── google_auth.py       ← Google OAuth 2.0 flow
-│   │   ├── cache.py             ← TTL cache with async locking
-│   │   ├── exceptions.py        ← Custom exception handlers
-│   │   ├── security_log.py      ← Security audit logging
-│   │   ├── admin_tools.py       ← Admin utilities
-│   │   ├── supabase_client.py   ← Supabase integration
-│   │   ├── middleware/
-│   │   │   ├── rate_limiter.py  ← Token-bucket rate limiting
-│   │   │   ├── request_logger.py← Request logging middleware
-│   │   │   └── security_headers.py ← Security response headers
-│   │   ├── routes/
-│   │   │   ├── employee.py      ← Login, profile, resume upload, top projects
-│   │   │   ├── register.py      ← Signup for employee, team lead, HR
-│   │   │   ├── team.py          ← Team CRUD, heatmap, skill-gap
-│   │   │   ├── project.py       ← Project CRUD, embedding trigger
-│   │   │   └── hr.py            ← Team ranking, evaluation, details
-│   │   └── services/
-│   │       ├── embedding_service.py  ← FAISS + sentence-transformers
-│   │       ├── matching_service.py   ← Hybrid scoring engine
-│   │       └── team_service.py       ← Team utilities, heatmap data
-│   ├── alembic/                 ← Database migrations
-│   ├── tests/                   ← pytest test suite (46 tests)
-│   ├── seed.py                  ← Demo data seeder
-│   ├── requirements.txt
-│   └── .env                     ← Environment config
-│
-└── frontend/
-    ├── src/
-    │   ├── App.jsx              ← Router with role-based guards
-    │   ├── services/
-    │   │   ├── api.js           ← Axios client + all API modules
-    │   │   └── supabase.js      ← Supabase client
-    │   ├── context/
-    │   │   ├── ThemeContext.jsx  ← Dark/light mode
-    │   │   └── ToastContext.jsx  ← Global notifications
-    │   ├── components/
-    │   │   ├── Layout.jsx               ← Navbar + sidebar shell
-    │   │   ├── GoogleSignIn.jsx         ← Google OAuth button + callback
-    │   │   ├── AdvancedSearch.jsx       ← Search with filters & suggestions
-    │   │   ├── AssignmentHistory.jsx    ← Assignment tracking
-    │   │   ├── MatchExplanation.jsx     ← Why teams match projects
-    │   │   ├── NotificationCenter.jsx   ← Real-time notifications
-    │   │   ├── Pagination.jsx           ← Dynamic pagination
-    │   │   ├── ProjectFeedback.jsx      ← Rating & review system
-    │   │   ├── ReportExport.jsx         ← PDF/Excel/CSV exports
-    │   │   ├── ScoreBar.jsx             ← Animated progress bar
-    │   │   ├── SearchBar.jsx            ← Simple search input
-    │   │   ├── SkeletonLoader.jsx       ← 10+ loading skeletons
-    │   │   ├── SkillBadge.jsx           ← Skill pill component
-    │   │   ├── SkillHeatmap.jsx         ← Team skill grid
-    │   │   ├── SkipLink.jsx             ← Accessibility skip nav
-    │   │   ├── TeamAssignmentWorkflow.jsx ← 4-step assignment wizard
-    │   │   ├── TeamFilter.jsx           ← Multi-criteria team filter
-    │   │   ├── TeamScenarioSimulator.jsx ← What-if analysis
-    │   │   ├── Toast.jsx                ← Notification toast
-    │   │   └── ToastContainer.jsx       ← Toast stack manager
-    │   ├── hooks/
-    │   │   ├── useA11y.js       ← Accessibility helpers
-    │   │   ├── useDebounce.js   ← Debounce hook
-    │   │   ├── useLocalStorage.js ← Persistent state
-    │   │   └── useRealtime.js   ← Real-time subscriptions
-    │   ├── utils/
-    │   │   ├── csvExport.js     ← CSV export utilities
-    │   │   ├── exportUtils.js   ← PDF/Excel helpers
-    │   │   ├── jwt.js           ← Token decode utility
-    │   │   ├── usePagination.js ← Pagination hooks
-    │   │   └── useSearch.js     ← Search/fuzzy-match hooks
-    │   └── pages/
-    │       ├── LoginPage.jsx
-    │       ├── SignupPage.jsx
-    │       ├── employee/
-    │       │   ├── Dashboard.jsx        ← Top 5 projects + radar chart
-    │       │   ├── ResumeUploadPage.jsx ← PDF resume upload + parsing
-    │       │   └── SkillGapPage.jsx     ← Per-project gap analysis
-    │       ├── teamlead/
-    │       │   ├── TeamOverviewPage.jsx ← Member cards
-    │       │   └── SkillHeatmapPage.jsx ← Skill grid heatmap
-    │       └── hr/
-    │           ├── AddProjectPage.jsx   ← Create project + project list
-    │           ├── RankTeamsPage.jsx    ← Top 5 teams + bar chart
-    │           └── TeamDetailsPage.jsx  ← Team deep-dive + pie chart
-    ├── .env                     ← Frontend env (VITE_GOOGLE_CLIENT_ID)
-    ├── package.json
-    ├── vite.config.js
-    └── tailwind.config.js
+final_score = 0.4 Ã— embedding_similarity
+            + 0.3 Ã— skill_coverage
+            + 0.2 Ã— experience_match
+            + 0.1 Ã— team_balance
 ```
+
+| Component | Method |
+|---|---|
+| **Embedding similarity** | Cosine similarity via FAISS IndexFlatIP on L2-normalised vectors; team lead weighted 1.5Ã— |
+| **Skill coverage** | `\|required âˆ© team_skills\| / \|required\|` |
+| **Experience match** | `min(avg_team_exp / required_exp, 1.0)` |
+| **Team balance** | `unique_skills / total_skills` across all members |
+
+Resume PDFs are parsed with `pdfplumber` + spaCy to extract skills, then the employee's embedding is recomputed and stored in the FAISS index automatically.
+
+---
+
+## Key Engineering Decisions
+
+- **Multi-tenant isolation** â€” Each HR organisation gets a dedicated SQLite file (`hr_{hr_id}.db`). The JWT carries the `hr_id` claim so every request routes to the correct database with zero cross-tenant data leakage.
+- **Thread-safe engine cache** â€” `get_hr_db()` uses double-checked locking with `threading.Lock()` and `NullPool` to prevent stale connection reuse while caching the `sessionmaker` per tenant.
+- **Async-safe TTL cache** â€” In-memory result caching with async locking prevents cache stampede under concurrent requests.
+- **Security middleware stack** â€” Token-bucket rate limiter â†’ request logger â†’ security headers (CSP, HSTS, X-Frame-Options) applied globally across all routes.
+- **Role-based access control** â€” Three roles (`hr`, `team_lead`, `employee`) enforced at the FastAPI dependency level via JWT claims, not just in business logic.
+
+---
+
+## Features
+
+### Core
+- AI-powered team-to-project matching with explainable composite scoring
+- PDF resume upload â†’ NLP skill extraction â†’ automatic FAISS embedding update
+- Multi-role system: HR Admin, Team Lead, Employee â€” each with a dedicated dashboard
+- Multi-tenant HR database isolation per organisation
+- Google OAuth 2.0 sign-in and account linking
+
+### HR Dashboard
+- Create and manage projects with auto-generated FAISS embeddings
+- Rank all teams for a project with score breakdown (bar chart)
+- Team deep-dive: members, skills, experience, pie chart visualisation
+- Run evaluations and manage project applications
+
+### Team Lead Dashboard
+- Team overview with member skill cards and experience levels
+- Interactive skill heatmap showing coverage across all team members
+- Per-employee skill gap analysis relative to specific projects
+
+### Employee Dashboard
+- Top 5 AI-matched projects with match percentage and skill overlap breakdown
+- Per-project skill gap page with actionable recommendations
+- PDF resume upload with instant skill extraction and embedding refresh
+
+### UI/UX
+- Fully responsive (mobile, tablet, desktop)
+- Dark/light mode with OS preference detection
+- Skeleton loaders, toast notifications, advanced fuzzy search with filters
+- Accessibility: skip links, ARIA labels, full keyboard navigation (WCAG-compliant)
+
+### Data & Exports
+- CSV export: employees, projects, skill matrix, team performance reports
+- PDF/Excel report generation
+- Assignment history tracking and audit logs
+- Real-time notification centre
 
 ---
 
 ## Quick Start
+
+### Prerequisites
+- Python 3.10+ and Node.js 18+
 
 ### 1. Backend
 
 ```bash
 cd backend
 
-# Create virtual environment (optional)
-python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # macOS/Linux
+# Create and activate virtual environment
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # macOS / Linux
 
 # Install dependencies
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 
-# Seed database with demo data
+# Seed demo data (creates klh.db + hr_HR001.db with 13 accounts)
 python seed.py
 
 # Start API server
-python -m uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
-API: http://localhost:8000  
-Docs: http://localhost:8000/docs
+- API: http://localhost:8000
+- Interactive docs: http://localhost:8000/docs
 
 ### 2. Frontend
 
@@ -183,182 +163,142 @@ npm install
 npm run dev
 ```
 
-Frontend: http://localhost:5175
+- App: http://localhost:5175
 
-### 3. Environment Variables
+### 3. Docker (full stack)
 
-**backend/.env**
+```bash
+docker-compose up --build
+```
+
+### 4. Environment Variables
+
+**`backend/.env`**
 ```env
 DATABASE_URL=sqlite:///./klh.db
-SECRET_KEY=<your-secret-key>
+SECRET_KEY=your-secret-key-here
 ACCESS_TOKEN_EXPIRE_MINUTES=60
-GOOGLE_CLIENT_ID=<your-google-client-id>
-GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:5175/auth/google/callback
 ```
 
-**frontend/.env**
+**`frontend/.env`**
 ```env
-VITE_GOOGLE_CLIENT_ID=<your-google-client-id>
 VITE_API_URL=http://localhost:8000
+VITE_GOOGLE_CLIENT_ID=your-google-client-id
 ```
 
 ---
 
 ## Demo Accounts
 
-| Role | Email | Password | HR ID |
-|------|-------|----------|-------|
-| HR | hr@klh.com | hr123 | HR001 |
-| Team Lead (Alpha Squad) | arjun@klh.com | pass123 | HR001 |
-| Team Lead (Beta Brains) | sameer@klh.com | pass123 | HR001 |
-| Team Lead (Gamma Force) | vikram@klh.com | pass123 | HR001 |
-| Employee | meera@klh.com | pass123 | HR001 |
-| Employee | kavya@klh.com | pass123 | HR001 |
+Use **HR ID `HR001`** for all demo logins.
+
+| Role | Email | Password |
+|---|---|---|
+| HR Admin | hr@klh.com | hr123 |
+| Team Lead â€” Alpha Squad | arjun@klh.com | pass123 |
+| Team Lead â€” Beta Brains | sameer@klh.com | pass123 |
+| Team Lead â€” Gamma Force | vikram@klh.com | pass123 |
+| Employee | meera@klh.com | pass123 |
+| Employee | kavya@klh.com | pass123 |
 
 ---
 
-## User Flows
+## API Reference
 
-### Employee
-1. Login → auto-redirected to Resume Upload (if first time) → Dashboard
-2. See **Top 5 matching projects** with match % and skill breakdown
-3. Upload PDF resume → auto-parsed, skills extracted, embedding regenerated
-4. Visit **Skill Gap** page for per-project gap analysis
-
-### Team Lead
-1. Login → Team Overview: member cards with skills and experience
-2. Skill Heatmap: grid showing skill distribution across team members
-3. Coverage percentage per skill
-
-### HR
-1. Login → Add Project form + existing project list
-2. Create project → embedding generated automatically via FAISS
-3. Click **Evaluate Teams** → Top 5 teams ranked with composite score breakdown
-4. Click **View Details** → Team deep-dive with pie chart
-
-### Google OAuth
-1. Click "Continue with Google" on login page
-2. Select Google account → verified server-side
-3. Auto-creates account if new, links if existing email matches
-4. Redirects based on role
-
----
-
-## API Endpoints
-
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/employee/login` | Public | JWT login |
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/employee/login` | Public | JWT login (email/username + HR ID) |
 | GET | `/api/employee/me` | Bearer | Get current user profile |
 | PUT | `/api/employee/me` | Bearer | Update profile |
-| POST | `/api/employee/upload-resume` | Bearer | Upload PDF resume |
-| GET | `/api/employee/top-projects` | Bearer | Top 5 matching projects |
-| POST | `/api/employee/update-embedding` | Bearer | Regenerate embedding |
-| GET | `/api/team/` | Bearer | List teams |
-| POST | `/api/team/` | Bearer | Create team |
-| GET | `/api/team/{id}` | Bearer | Team details |
-| GET | `/api/team/{id}/members` | Bearer | Team members |
+| POST | `/api/employee/upload-resume` | Bearer | Upload PDF, extract skills, update embedding |
+| GET | `/api/employee/top-projects` | Bearer | Top 5 AI-matched projects |
+| POST | `/api/employee/update-embedding` | Bearer | Manually regenerate FAISS embedding |
+| GET | `/api/team/` | Bearer | List all teams |
+| POST | `/api/team/` | Bearer | Create a team |
 | GET | `/api/team/{id}/heatmap` | Bearer | Skill heatmap data |
-| GET | `/api/team/{id}/skill-gap/{emp_id}` | Bearer | Employee skill gap |
-| GET | `/api/project/` | Bearer | List projects |
-| GET | `/api/project/{id}` | Bearer | Project details |
-| POST | `/api/project/` | HR | Create project |
-| PUT | `/api/project/{id}` | HR | Update project |
-| DELETE | `/api/project/{id}` | HR | Delete project |
-| POST | `/api/project/{id}/embed` | HR | Generate project embedding |
-| GET | `/api/hr/rank-teams/{project_id}` | HR | Rank teams for project |
-| GET | `/api/hr/top-teams/{project_id}` | HR | Top 5 teams |
+| GET | `/api/team/{id}/skill-gap/{emp_id}` | Bearer | Per-employee skill gap |
+| GET | `/api/project/` | Bearer | List all projects |
+| POST | `/api/project/` | HR | Create project + trigger embedding |
+| GET | `/api/hr/rank-teams/{project_id}` | HR | Rank all teams by AI score |
+| GET | `/api/hr/top-teams/{project_id}` | HR | Top 5 matched teams |
+| POST | `/api/hr/evaluate/{project_id}` | HR | Run full team evaluation |
 | GET | `/api/hr/team-details/{team_id}` | HR | Team deep-dive |
-| GET | `/api/hr/teams` | HR | All teams list |
-| GET | `/api/hr/applications/{project_id}` | HR | Project applications |
-| POST | `/api/hr/evaluate/{project_id}` | HR | Run team evaluation |
-| POST | `/api/register/employee` | Public | Register employee |
+| POST | `/api/register/employee` | Public | Register new employee |
 | POST | `/api/register/teamlead` | Public | Register team lead |
-| POST | `/api/register/hr` | Public | Register HR |
-| GET | `/api/register/team-lookup/{code}` | Public | Lookup team by code |
-| GET | `/api/auth/google/login-url` | Public | Get Google OAuth URL |
+| POST | `/api/register/hr` | Public | Register HR admin |
+| GET | `/api/auth/google/login-url` | Public | Google OAuth redirect URL |
 | POST | `/api/auth/google/callback` | Public | Google OAuth callback |
-| POST | `/api/auth/google/link` | Bearer | Link Google account |
-
----
-
-## Matching Formula
-
-```
-final_score = 0.4 × embedding_similarity
-            + 0.3 × skill_coverage
-            + 0.2 × experience_match
-            + 0.1 × team_balance
-```
-
-- **Embedding similarity**: cosine similarity between team weighted-average embedding and project embedding (team lead weight = 1.5×)
-- **Skill coverage**: `|required ∩ team_skills| / |required|`
-- **Experience match**: `min(avg_team_experience / required_experience, 1.0)`
-- **Team balance**: `unique_skills / total_skills` across team
-
----
-
-## Architecture
-
-### Multi-Tenant Database
-Each HR user gets an isolated SQLite database (`hr_{hr_id}.db`) containing their teams, employees, and projects. JWT tokens carry the `hr_id` claim for routing to the correct database.
-
-### Authentication
-- **JWT Bearer tokens** with role-based access control (`hr`, `team_lead`, `employee`)
-- **Google OAuth 2.0** with authorization code flow
-- **Rate limiting**: 10 login attempts/min, 100 general requests/min
-- Password hashing via bcrypt
-
-### Middleware Stack
-- Rate limiter (token bucket)
-- Request logger
-- Security headers (CSP, HSTS, X-Frame-Options)
-- CORS configuration
+| POST | `/api/auth/google/link` | Bearer | Link Google to existing account |
+| GET | `/health` | Public | Health check |
+| GET | `/ready` | Public | Readiness probe (DB + cache) |
 
 ---
 
 ## Testing
 
 ```bash
+# Backend -- 46 tests
 cd backend
-python -m pytest tests/ -q --tb=short
+pytest tests/ -v --tb=short
+
+# Frontend
+cd frontend
+npm run test
 ```
 
-46 tests covering: authentication, API endpoints, caching, error handling.
+Test coverage: JWT authentication, all API endpoints, cache behaviour, error handling, React UI components.
 
 ---
 
-## Features
+## Project Structure
 
-### Core
-- AI-powered team-project matching with hybrid scoring
-- Multi-role auth (HR, Team Lead, Employee) + Google OAuth
-- PDF resume upload with auto skill extraction
-- Multi-tenant HR database isolation
+```
+KLH/
+  backend/
+    app/
+      main.py              -- FastAPI app entry point
+      config.py            -- Pydantic settings (env-driven)
+      database.py          -- Multi-tenant engine cache, session routing
+      models.py            -- SQLAlchemy ORM models
+      schemas.py           -- Pydantic v2 request/response schemas
+      auth.py              -- JWT, bcrypt, role guards
+      google_auth.py       -- Google OAuth 2.0
+      cache.py             -- Async TTL cache
+      middleware/
+        rate_limiter.py    -- Token-bucket rate limiting
+        request_logger.py
+        security_headers.py
+      routes/
+        employee.py        -- Login, profile, resume, top-projects
+        register.py        -- Signup flows
+        team.py            -- CRUD, heatmap, skill-gap
+        project.py         -- CRUD + embedding trigger
+        hr.py              -- Ranking, evaluation, details
+      services/
+        embedding_service.py  -- FAISS + sentence-transformers
+        matching_service.py   -- Hybrid scoring engine
+        team_service.py       -- Heatmap, skill aggregation
+    alembic/               -- Database migrations
+    tests/                 -- 46 pytest tests
+    seed.py                -- Demo data seeder
+    requirements.txt
 
-### Analytics & Visualization
-- Interactive skill heatmaps
-- Radar charts for project match breakdown
-- Team scenario simulator (what-if analysis)
-- Match explanations with recommendations
+  frontend/
+    src/
+      pages/
+        employee/          -- Dashboard, Resume Upload, Skill Gap
+        teamlead/          -- Team Overview, Skill Heatmap
+        hr/                -- Add Project, Rank Teams, Team Details
+      components/          -- 20+ reusable UI components
+      hooks/               -- useDebounce, useRealtime, useA11y
+      context/             -- Theme + Toast context providers
+      services/            -- Axios API client, Supabase client
 
-### UI/UX
-- Responsive design (mobile, tablet, desktop)
-- Dark/light mode with system preference detection
-- Toast notifications (success, error, info, warning)
-- Skeleton loaders for all data views
-- Advanced search with fuzzy matching and filters
-- Dynamic pagination with configurable page sizes
-- Accessibility (skip links, ARIA, keyboard nav)
+  docker-compose.yml
+  .github/workflows/ci.yml -- GitHub Actions CI/CD pipeline
+```
+---
 
-### Data Export
-- CSV export (employees, projects, skill matrix, team performance)
-- PDF/Excel report generation
-- Assignment tracking and history
-
-### Admin & Ops
-- Team assignment workflow (4-step wizard)
-- Project feedback and rating system
-- Security audit logging
-- Real-time notification center
