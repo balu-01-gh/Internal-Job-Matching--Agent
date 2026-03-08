@@ -1,4 +1,4 @@
-﻿# KLH Match â€” AI-Powered Internal Job Matching Agent
+﻿# KLH Match AI-Powered Internal Job Matching Agent
 
 > A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring â€” combining sentence embeddings, skill analysis, and team balance metrics.
 
