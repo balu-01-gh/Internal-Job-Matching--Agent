@@ -1,6 +1,6 @@
-﻿# KLH Match AI-Powered Internal Job Matching Agent
+# KLH Match -- AI-Powered Internal Job Matching Agent
 
-> A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring combining sentence embeddings, skill analysis, and team balance metrics.
+> A production-grade full-stack platform that intelligently matches **internal employee teams** to **projects** using hybrid AI scoring -- combining sentence embeddings, skill analysis, and team balance metrics.
 
 ## Tech Stack
 
@@ -41,7 +41,7 @@
 
 ## What This Project Demonstrates
 
-This project was built end-to-end as a showcase of full-stack engineering and applied AI covering system design, REST API development, ML integration, multi-tenant architecture, security, testing, and deployment.
+This project was built end-to-end as a showcase of full-stack engineering and applied AI -- covering system design, REST API development, ML integration, multi-tenant architecture, security, testing, and deployment.
 
 | Area | What Was Built |
 |---|---|
@@ -60,16 +60,16 @@ This project was built end-to-end as a showcase of full-stack engineering and ap
 Each team and project is represented as a **384-dimensional vector** using `sentence-transformers/all-MiniLM-L6-v2`. Matching uses a weighted hybrid score:
 
 ```
-final_score = 0.4 Ã— embedding_similarity
-            + 0.3 Ã— skill_coverage
-            + 0.2 Ã— experience_match
-            + 0.1 Ã— team_balance
+final_score = 0.4 x embedding_similarity
+            + 0.3 x skill_coverage
+            + 0.2 x experience_match
+            + 0.1 x team_balance
 ```
 
 | Component | Method |
 |---|---|
-| **Embedding similarity** | Cosine similarity via FAISS IndexFlatIP on L2-normalised vectors; team lead weighted 1.5Ã— |
-| **Skill coverage** | `\|required âˆ© team_skills\| / \|required\|` |
+| **Embedding similarity** | Cosine similarity via FAISS IndexFlatIP on L2-normalised vectors; team lead weighted 1.5x |
+| **Skill coverage** | `\|required ∩ team_skills\| / \|required\|` |
 | **Experience match** | `min(avg_team_exp / required_exp, 1.0)` |
 | **Team balance** | `unique_skills / total_skills` across all members |
 
@@ -79,11 +79,11 @@ Resume PDFs are parsed with `pdfplumber` + spaCy to extract skills, then the emp
 
 ## Key Engineering Decisions
 
-- **Multi-tenant isolation** â€” Each HR organisation gets a dedicated SQLite file (`hr_{hr_id}.db`). The JWT carries the `hr_id` claim so every request routes to the correct database with zero cross-tenant data leakage.
-- **Thread-safe engine cache** â€” `get_hr_db()` uses double-checked locking with `threading.Lock()` and `NullPool` to prevent stale connection reuse while caching the `sessionmaker` per tenant.
-- **Async-safe TTL cache** â€” In-memory result caching with async locking prevents cache stampede under concurrent requests.
-- **Security middleware stack** â€” Token-bucket rate limiter â†’ request logger â†’ security headers (CSP, HSTS, X-Frame-Options) applied globally across all routes.
-- **Role-based access control** â€” Three roles (`hr`, `team_lead`, `employee`) enforced at the FastAPI dependency level via JWT claims, not just in business logic.
+- **Multi-tenant isolation** -- Each HR organisation gets a dedicated SQLite file (`hr_{hr_id}.db`). The JWT carries the `hr_id` claim so every request routes to the correct database with zero cross-tenant data leakage.
+- **Thread-safe engine cache** -- `get_hr_db()` uses double-checked locking with `threading.Lock()` and `NullPool` to prevent stale connection reuse while caching the `sessionmaker` per tenant.
+- **Async-safe TTL cache** -- In-memory result caching with async locking prevents cache stampede under concurrent requests.
+- **Security middleware stack** -- Token-bucket rate limiter -> request logger -> security headers (CSP, HSTS, X-Frame-Options) applied globally across all routes.
+- **Role-based access control** -- Three roles (`hr`, `team_lead`, `employee`) enforced at the FastAPI dependency level via JWT claims, not just in business logic.
 
 ---
 
@@ -91,8 +91,8 @@ Resume PDFs are parsed with `pdfplumber` + spaCy to extract skills, then the emp
 
 ### Core
 - AI-powered team-to-project matching with explainable composite scoring
-- PDF resume upload â†’ NLP skill extraction â†’ automatic FAISS embedding update
-- Multi-role system: HR Admin, Team Lead, Employee â€” each with a dedicated dashboard
+- PDF resume upload -> NLP skill extraction -> automatic FAISS embedding update
+- Multi-role system: HR Admin, Team Lead, Employee -- each with a dedicated dashboard
 - Multi-tenant HR database isolation per organisation
 - Google OAuth 2.0 sign-in and account linking
 
@@ -198,9 +198,9 @@ Use **HR ID `HR001`** for all demo logins.
 | Role | Email | Password |
 |---|---|---|
 | HR Admin | hr@klh.com | hr123 |
-| Team Lead â€” Alpha Squad | arjun@klh.com | pass123 |
-| Team Lead â€” Beta Brains | sameer@klh.com | pass123 |
-| Team Lead â€” Gamma Force | vikram@klh.com | pass123 |
+| Team Lead -- Alpha Squad | arjun@klh.com | pass123 |
+| Team Lead -- Beta Brains | sameer@klh.com | pass123 |
+| Team Lead -- Gamma Force | vikram@klh.com | pass123 |
 | Employee | meera@klh.com | pass123 |
 | Employee | kavya@klh.com | pass123 |
 
